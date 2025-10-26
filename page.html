@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伞通通 - 主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            max-width: 375px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            padding: 15px;
+            padding-bottom: 70px;
+        }
+        
+        /* 顶部导航 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #4a90e2;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            max-width: 375px;
+            margin: 0 auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .nav-item.active {
+            color: #4a90e2;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* 天气卡片 */
+        .weather-card {
+            background: linear-gradient(135deg, #4a90e2, #63b3ed);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+        
+        .location {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .location-selector {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .location-selector select {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: rgb(31, 29, 29);
+            font-size: 14px;
+            padding: 5px 25px 5px 10px;
+            border-radius: 15px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+        }
+        
+        .location-selector::after {
+            content: "▼";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 10px;
+            pointer-events: none;
+        }
+        
+        .current-weather {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .temperature {
+            font-size: 48px;
+            font-weight: 300;
+        }
+        
+        .weather-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .detail-item {
+            text-align: center;
+        }
+        
+        .detail-value {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .protection-tips {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 14px;
+        }
+        
+        /* 服务卡片 */
+        .service-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .service-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .service-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #4a90e2;
+        }
+        
+        .service-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .service-desc {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 社区帖子 */
+        .community-posts {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .post {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .post:last-child {
+            border-bottom: none;
+        }
+        
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #eee;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .post-content {
+            flex: 1;
+        }
+        
+        .post-user {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .post-text {
+            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .post-image {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            object-fit: cover;
+            background-color: #f0f0f0;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 定位加载动画 */
+        .location-loading {
+            display: none;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 城市选择模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 300px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .city-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .city-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+        
+        .city-item:last-child {
+            border-bottom: none;
+        }
+        
+        .city-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .modal-btn.cancel {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .modal-btn.confirm {
+            background-color: #4a90e2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <h1>伞通通</h1>
+        <div class="header-icons">
+            <span>🔍</span>
+            <span>⏰</span>
+        </div>
+    </div>
+    
+    <!-- 主页内容 -->
+    <div class="container">
+        <!-- 天气卡片 -->
+        <div class="weather-card">
+            <div class="location">
+                <div class="location-info">
+                    <span>📍</span>
+                    <div class="location-selector">
+                        <select id="city-select">
+                            <option value="北京">北京市</option>
+                            <option value="上海">上海市</option>
+                            <option value="广州">广州市</option>
+                            <option value="深圳">深圳市</option>
+                            <option value="成都">成都市</option>
+                            <option value="杭州">杭州市</option>
+                            <option value="manual">手动选择...</option>
+                        </select>
+                    </div>
+                </div>
+                <span id="location-refresh">🔄</span>
+            </div>
+            
+            <div class="current-weather">
+                <div>
+                    <div class="temperature" id="temperature">26°</div>
+                    <div id="weather-condition">多云转晴</div>
+                </div>
+                <div id="weather-icon">☀️</div>
+            </div>
+            
+            <div class="weather-details">
+                <div class="detail-item">
+                    <div class="detail-value" id="humidity">65%</div>
+                    <div class="detail-label">湿度</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-value" id="wind">2级</div>
+                    <div class="detail-label">风力</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-value" id="rain-probability">30%</div>
+                    <div class="detail-label">降雨概率</div>
+                </div>
+            </div>
+            
+            <div class="protection-tips" id="protection-tips">
+                <strong>防护建议：</strong> 今日有降雨可能，建议携带雨伞出行
+            </div>
+        </div>
+        
+        <!-- 服务卡片 -->
+        <div class="service-cards">
+            <a href="service.html" class="service-card">
+                <div class="service-icon">🌂</div>
+                <div class="service-title">送伞服务</div>
+                <div class="service-desc">急需用伞？骑手为您送达</div>
+            </a>
+            
+            <a href="service.html" class="service-card">
+                <div class="service-icon">🤝</div>
+                <div class="service-title">共享伞</div>
+                <div class="service-desc">匹配同行伞友，共享伞具</div>
+            </a>
+        </div>
+        
+        <!-- 社区动态 -->
+        <div class="community-posts">
+            <div class="section-title">
+                社区动态
+                <a href="community.html" style="font-size:14px;color:#4a90e2;font-weight:normal;text-decoration:none">更多</a>
+            </div>
+            
+            <div class="post">
+                <div class="post-avatar">用户</div>
+                <div class="post-content">
+                    <div class="post-user">伞友小明</div>
+                    <div class="post-text">今天通过共享伞功能认识了同路的伞友，一路聊得很开心！</div>
+                    <div class="post-actions">
+                        <span>👍 12</span>
+                        <span>💬 5</span>
+                        <span>🕒 2小时前</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post">
+                <div class="post-avatar">用户</div>
+                <div class="post-content">
+                    <div class="post-user">雨中小跑</div>
+                    <div class="post-text">突如其来的大雨，幸好有伞通通的送伞服务，10分钟就送到了！</div>
+                    <img src="images/3.png" alt="送伞服务" class="post-image">
+                    <div class="post-actions">
+                        <span>👍 24</span>
+                        <span>💬 8</span>
+                        <span>🕒 5小时前</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 城市选择模态框 -->
+    <div id="city-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">选择城市</div>
+            <div class="city-list" id="city-list">
+                <div class="city-item" data-city="北京">北京市</div>
+                <div class="city-item" data-city="上海">上海市</div>
+                <div class="city-item" data-city="广州">广州市</div>
+                <div class="city-item" data-city="深圳">深圳市</div>
+                <div class="city-item" data-city="成都">成都市</div>
+                <div class="city-item" data-city="杭州">杭州市</div>
+                <div class="city-item" data-city="南京">南京市</div>
+                <div class="city-item" data-city="武汉">武汉市</div>
+                <div class="city-item" data-city="西安">西安市</div>
+                <div class="city-item" data-city="重庆">重庆市</div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" id="modal-cancel">取消</button>
+                <button class="modal-btn confirm" id="modal-confirm">确定</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <a href="page.html" class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            <div>主页</div>
+        </a>
+        <a href="service.html" class="nav-item">
+            <div class="nav-icon">🌂</div>
+            <div>伞服务</div>
+        </a>
+        <a href="community.html" class="nav-item">
+            <div class="nav-icon">👥</div>
+            <div>社区</div>
+        </a>
+        <a href="message.html" class="nav-item">
+            <div class="nav-icon">💬</div>
+            <div>消息</div>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div>我的</div>
+        </a>
+    </div>
+    
+    <script>
+        // 模拟城市天气数据
+        const weatherData = {
+            "北京": {
+                temperature: "26°",
+                condition: "多云转晴",
+                icon: "☀️",
+                humidity: "65%",
+                wind: "2级",
+                rainProbability: "30%",
+                protectionTip: "今日有降雨可能，建议携带雨伞出行"
+            },
+            "上海": {
+                temperature: "28°",
+                condition: "晴",
+                icon: "☀️",
+                humidity: "70%",
+                wind: "3级",
+                rainProbability: "10%",
+                protectionTip: "天气晴朗，紫外线较强，建议携带遮阳伞"
+            },
+            "广州": {
+                temperature: "32°",
+                condition: "雷阵雨",
+                icon: "⛈️",
+                humidity: "85%",
+                wind: "4级",
+                rainProbability: "80%",
+                protectionTip: "今日有雷阵雨，请务必携带雨伞"
+            },
+            "深圳": {
+                temperature: "30°",
+                condition: "阵雨",
+                icon: "🌦️",
+                humidity: "80%",
+                wind: "3级",
+                rainProbability: "60%",
+                protectionTip: "今日有阵雨，建议携带雨伞"
+            },
+            "成都": {
+                temperature: "24°",
+                condition: "阴",
+                icon: "☁️",
+                humidity: "75%",
+                wind: "2级",
+                rainProbability: "40%",
+                protectionTip: "天气阴沉，有降雨可能，建议携带雨伞"
+            },
+            "杭州": {
+                temperature: "27°",
+                condition: "小雨",
+                icon: "🌧️",
+                humidity: "78%",
+                wind: "3级",
+                rainProbability: "70%",
+                protectionTip: "今日有小雨，请携带雨伞"
+            },
+            "南京": {
+                temperature: "25°",
+                condition: "多云",
+                icon: "⛅",
+                humidity: "68%",
+                wind: "2级",
+                rainProbability: "20%",
+                protectionTip: "天气多云，有轻微降雨可能"
+            },
+            "武汉": {
+                temperature: "29°",
+                condition: "晴",
+                icon: "☀️",
+                humidity: "65%",
+                wind: "2级",
+                rainProbability: "15%",
+                protectionTip: "天气晴朗，紫外线较强，建议携带遮阳伞"
+            },
+            "西安": {
+                temperature: "23°",
+                condition: "晴",
+                icon: "☀️",
+                humidity: "50%",
+                wind: "3级",
+                rainProbability: "5%",
+                protectionTip: "天气晴朗，无需携带雨伞"
+            },
+            "重庆": {
+                temperature: "31°",
+                condition: "多云",
+                icon: "☁️",
+                humidity: "72%",
+                wind: "2级",
+                rainProbability: "25%",
+                protectionTip: "天气多云，有轻微降雨可能"
+            }
+        };
+        
+        // DOM元素
+        const citySelect = document.getElementById('city-select');
+        const locationRefresh = document.getElementById('location-refresh');
+        const temperature = document.getElementById('temperature');
+        const weatherCondition = document.getElementById('weather-condition');
+        const weatherIcon = document.getElementById('weather-icon');
+        const humidity = document.getElementById('humidity');
+        const wind = document.getElementById('wind');
+        const rainProbability = document.getElementById('rain-probability');
+        const protectionTips = document.getElementById('protection-tips');
+        const cityModal = document.getElementById('city-modal');
+        const cityList = document.getElementById('city-list');
+        const modalCancel = document.getElementById('modal-cancel');
+        const modalConfirm = document.getElementById('modal-confirm');
+        
+        // 当前选择的城市
+        let currentCity = "杭州";
+        let selectedCity = null;
+        
+        // 更新天气信息
+        function updateWeather(city) {
+            const data = weatherData[city];
+            if (data) {
+                temperature.textContent = data.temperature;
+                weatherCondition.textContent = data.condition;
+                weatherIcon.textContent = data.icon;
+                humidity.textContent = data.humidity;
+                wind.textContent = data.wind;
+                rainProbability.textContent = data.rainProbability;
+                protectionTips.innerHTML = `<strong>防护建议：</strong> ${data.protectionTip}`;
+                
+                // 更新下拉选择框
+                for (let option of citySelect.options) {
+                    if (option.value === city) {
+                        option.selected = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // 初始化天气信息
+        updateWeather(currentCity);
+        
+        // 城市选择事件
+        citySelect.addEventListener('change', function() {
+            if (this.value === 'manual') {
+                // 打开城市选择模态框
+                cityModal.style.display = 'flex';
+            } else {
+                currentCity = this.value;
+                updateWeather(currentCity);
+            }
+        });
+        
+        // 定位刷新事件
+        locationRefresh.addEventListener('click', function() {
+            // 显示加载动画
+            const originalContent = this.textContent;
+            this.textContent = '⏳';
+            this.classList.add('location-loading');
+            
+            // 模拟定位过程
+            setTimeout(() => {
+                // 模拟定位到随机城市
+                const cities = Object.keys(weatherData);
+                const randomCity = cities[Math.floor(Math.random() * cities.length)];
+                currentCity = randomCity;
+                updateWeather(currentCity);
+                
+                // 恢复按钮状态
+                this.textContent = originalContent;
+                this.classList.remove('location-loading');
+            }, 1500);
+        });
+        
+        // 城市列表点击事件
+        cityList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('city-item')) {
+                // 移除之前的选择
+                const selected = cityList.querySelector('.city-item.selected');
+                if (selected) {
+                    selected.classList.remove('selected');
+                }
+                
+                // 标记新选择
+                e.target.classList.add('selected');
+                selectedCity = e.target.dataset.city;
+            }
+        });
+        
+        // 模态框取消按钮
+        modalCancel.addEventListener('click', function() {
+            cityModal.style.display = 'none';
+            // 重置下拉选择框
+            for (let option of citySelect.options) {
+                if (option.value === currentCity) {
+                    option.selected = true;
+                    break;
+                }
+            }
+        });
+        
+        // 模态框确定按钮
+        modalConfirm.addEventListener('click', function() {
+            if (selectedCity) {
+                currentCity = selectedCity;
+                updateWeather(currentCity);
+                cityModal.style.display = 'none';
+            } else {
+                alert('请选择一个城市');
+            }
+        });
+    </script>
+</body>
+</html>

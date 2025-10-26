@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伞通通 - 社区</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            max-width: 375px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            padding: 15px;
+            padding-bottom: 70px;
+        }
+        
+        /* 顶部导航 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #4a90e2;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            max-width: 375px;
+            margin: 0 auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .nav-item.active {
+            color: #4a90e2;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* 发布区域 */
+        .post-editor {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .post-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #eee;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .post-text-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .media-options {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .post-button {
+            padding: 8px 20px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        /* 社区帖子 */
+        .community-posts {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .post {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .post:last-child {
+            border-bottom: none;
+        }
+        
+        .post-content {
+            flex: 1;
+        }
+        
+        .post-user {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .post-text {
+            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .post-image-container {
+            width: 100%;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .post-image {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .post-action:hover {
+            color: #4a90e2;
+        }
+        
+        .post-action.liked {
+            color: #ff4757;
+        }
+        
+        /* 评论模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 350px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        .comment-list {
+            margin-bottom: 15px;
+        }
+        
+        .comment-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .comment-user {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .comment-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .comment-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .comment-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .comment-text-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .comment-send {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        /* 发布成功提示 */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1001;
+            display: none;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(74, 144, 226, 0.3);
+            border-radius: 50%;
+            border-top-color: #4a90e2;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 图片上传区域 */
+        .image-upload {
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .image-preview {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .preview-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <h1>社区</h1>
+        <div class="header-icons">
+            <span>🔍</span>
+            <span>⏰</span>
+        </div>
+    </div>
+    
+    <!-- 社区内容 -->
+    <div class="container">
+        <!-- 发布区域 -->
+        <div class="post-editor">
+            <div class="post-input">
+                <div class="post-avatar">我</div>
+                <input type="text" class="post-text-input" id="new-post-text" placeholder="分享你的伞友故事...">
+            </div>
+            
+            <!-- 图片上传区域 -->
+            <div class="image-upload" id="image-upload">
+                <input type="file" id="image-input" accept="image/*" style="display: none;">
+                <div class="image-preview" id="image-preview"></div>
+            </div>
+            
+            <div class="post-actions">
+                <div class="media-options">
+                    <span id="add-image-btn">📷 图片</span>
+                    <span>🎥 视频</span>
+                </div>
+                <button class="post-button" id="publish-post">发布</button>
+            </div>
+        </div>
+        
+        <!-- 社区帖子 -->
+        <div class="community-posts" id="posts-container">
+            <div class="section-title">
+                热门话题
+                <span style="font-size:14px;color:#4a90e2;font-weight:normal">更多</span>
+            </div>
+            
+            <!-- 帖子将动态生成 -->
+        </div>
+    </div>
+    
+    <!-- 评论模态框 -->
+    <div id="comment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">评论</div>
+                <div class="modal-close" id="comment-modal-close">×</div>
+            </div>
+            <div class="modal-body">
+                <div class="comment-list" id="comment-list">
+                    <!-- 评论将动态生成 -->
+                </div>
+                <div class="comment-input">
+                    <input type="text" class="comment-text-input" id="comment-text" placeholder="写下你的评论...">
+                    <button class="comment-send" id="send-comment">➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 发布成功提示 -->
+    <div class="toast" id="toast">发布成功！</div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <div class="nav-icon">🏠</div>
+            <div>主页</div>
+        </a>
+        <a href="service.html" class="nav-item">
+            <div class="nav-icon">🌂</div>
+            <div>伞服务</div>
+        </a>
+        <a href="community.html" class="nav-item active">
+            <div class="nav-icon">👥</div>
+            <div>社区</div>
+        </a>
+        <a href="message.html" class="nav-item">
+            <div class="nav-icon">💬</div>
+            <div>消息</div>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div>我的</div>
+        </a>
+    </div>
+    
+    <script>
+        // 帖子数据
+        const postsData = [
+            {
+                id: 1,
+                user: "清纯男大",
+                text: "家人们，吃了顿饭发现伞被偷了",
+                image: "images/1.png",
+                likes: 42,
+                comments: 2,
+                time: "1天前",
+                liked: false,
+                commentsData: [
+                    { user: "伞友小明", text: "哈哈哈，笑死了", time: "5小时前" },
+                    { user: "雨中小跑", text: "嘴馋的小子", time: "3小时前" }
+                ]
+            },
+            {
+                id: 2,
+                user: "孤独的狼",
+                text: "雨天漫步故宫，别有一番风味",
+                image: "images/2.png",
+                likes: 38,
+                comments: 2,
+                time: "2天前",
+                liked: false,
+                commentsData: [
+                    { user: "伞友小明", text: "故宫雨景确实很美", time: "1天前" },
+                    { user: "雨中小跑", text: "故宫美。雨中故宫更美", time: "1天前" }
+                ]
+            },
+            {
+                id: 3,
+                user: "花开富贵",
+                text: "今天通过共享伞功能认识了同路的伞友，一路聊得很开心！",
+                image: null,
+                likes: 1,
+                comments: 5,
+                time: "2小时前",
+                liked: false,
+                commentsData: [
+                    { user: "城市漫步者", text: "共享伞功能真的很实用", time: "1小时前" }
+                ]
+            },
+            {
+                id: 4,
+                user: "上班族",
+                text: "突如其来的大雨，幸好有伞通通的送伞服务，10分钟就送到了！",
+                image: "images/3.png",
+                likes: 24,
+                comments: 2,
+                time: "5小时前",
+                liked: false,
+                commentsData: [
+                    { user: "伞友小明", text: "送伞服务确实很方便", time: "4小时前" },
+                    { user: "雨伞收藏家", text: "效率真高！", time: "3小时前" }
+                ]
+            }
+        ];
+        
+        // 当前查看评论的帖子ID
+        let currentPostId = null;
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPosts();
+            setupEventListeners();
+        });
+        
+        // 渲染帖子
+        function renderPosts() {
+            const postsContainer = document.getElementById('posts-container');
+            
+            // 清除现有内容（除了标题）
+            const titleElement = postsContainer.querySelector('.section-title');
+            postsContainer.innerHTML = '';
+            postsContainer.appendChild(titleElement);
+            
+            // 渲染每个帖子
+            postsData.forEach(post => {
+                const postElement = createPostElement(post);
+                postsContainer.appendChild(postElement);
+            });
+        }
+        
+        // 创建帖子元素
+        function createPostElement(post) {
+            const postElement = document.createElement('div');
+            postElement.className = 'post';
+            postElement.dataset.id = post.id;
+            
+            const likeClass = post.liked ? 'post-action liked' : 'post-action';
+            
+            let imageHtml = '';
+            if (post.image) {
+                imageHtml = `
+                    <div class="post-image-container">
+                        <img src="${post.image}" alt="帖子图片" class="post-image">
+                    </div>
+                `;
+            }
+            
+            postElement.innerHTML = `
+                <div class="post-avatar">${post.user.charAt(0)}</div>
+                <div class="post-content">
+                    <div class="post-user">${post.user}</div>
+                    <div class="post-text">${post.text}</div>
+                    ${imageHtml}
+                    <div class="post-actions">
+                        <div class="${likeClass}" data-action="like">
+                            <span>👍</span>
+                            <span class="like-count">${post.likes}</span>
+                        </div>
+                        <div class="post-action" data-action="comment">
+                            <span>💬</span>
+                            <span class="comment-count">${post.comments}</span>
+                        </div>
+                        <div class="post-action">
+                            <span>🕒</span>
+                            <span>${post.time}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return postElement;
+        }
+        
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 添加图片按钮
+            document.getElementById('add-image-btn').addEventListener('click', function() {
+                document.getElementById('image-input').click();
+            });
+            
+            // 图片上传处理
+            document.getElementById('image-input').addEventListener('change', function(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    document.getElementById('image-upload').style.display = 'block';
+                    
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            const previewItem = document.createElement('div');
+                            previewItem.className = 'preview-item';
+                            previewItem.innerHTML = `
+                                <img src="${e.target.result}" class="preview-image">
+                                <button class="remove-image">×</button>
+                            `;
+                            
+                            // 添加删除图片功能
+                            previewItem.querySelector('.remove-image').addEventListener('click', function() {
+                                previewItem.remove();
+                                if (document.getElementById('image-preview').children.length === 0) {
+                                    document.getElementById('image-upload').style.display = 'none';
+                                }
+                            });
+                            
+                            document.getElementById('image-preview').appendChild(previewItem);
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+            
+            // 发布帖子
+            document.getElementById('publish-post').addEventListener('click', function() {
+                const postText = document.getElementById('new-post-text').value.trim();
+                
+                if (!postText) {
+                    alert('请输入帖子内容');
+                    return;
+                }
+                
+                // 获取上传的图片
+                const previewImages = document.getElementById('image-preview').querySelectorAll('.preview-image');
+                let imageSrc = null;
+                if (previewImages.length > 0) {
+                    // 这里只取第一张图片作为示例
+                    imageSrc = previewImages[0].src;
+                }
+                
+                // 创建新帖子
+                const newPost = {
+                    id: Date.now(),
+                    user: "我",
+                    text: postText,
+                    image: imageSrc,
+                    likes: 0,
+                    comments: 0,
+                    time: "刚刚",
+                    liked: false,
+                    commentsData: []
+                };
+                
+                // 添加到数据开头
+                postsData.unshift(newPost);
+                
+                // 重新渲染帖子
+                renderPosts();
+                
+                // 清空输入框和图片
+                document.getElementById('new-post-text').value = '';
+                document.getElementById('image-preview').innerHTML = '';
+                document.getElementById('image-upload').style.display = 'none';
+                
+                // 显示成功提示
+                showToast('发布成功！');
+            });
+            
+            // 点赞和评论事件委托
+            document.getElementById('posts-container').addEventListener('click', function(e) {
+                const target = e.target.closest('.post-action');
+                if (!target) return;
+                
+                const postElement = target.closest('.post');
+                const postId = parseInt(postElement.dataset.id);
+                const action = target.dataset.action;
+                
+                if (action === 'like') {
+                    handleLike(postId);
+                } else if (action === 'comment') {
+                    handleComment(postId);
+                }
+            });
+            
+            // 关闭评论模态框
+            document.getElementById('comment-modal-close').addEventListener('click', function() {
+                document.getElementById('comment-modal').style.display = 'none';
+            });
+            
+            // 发送评论
+            document.getElementById('send-comment').addEventListener('click', function() {
+                const commentText = document.getElementById('comment-text').value.trim();
+                
+                if (!commentText) {
+                    alert('请输入评论内容');
+                    return;
+                }
+                
+                if (!currentPostId) return;
+                
+                // 添加评论
+                const post = postsData.find(p => p.id === currentPostId);
+                if (post) {
+                    post.commentsData.unshift({
+                        user: "我",
+                        text: commentText,
+                        time: "刚刚"
+                    });
+                    
+                    post.comments += 1;
+                    
+                    // 更新评论列表
+                    renderComments(post.commentsData);
+                    
+                    // 更新帖子中的评论数
+                    updatePostCommentCount(post.id, post.comments);
+                    
+                    // 清空评论输入框
+                    document.getElementById('comment-text').value = '';
+                    
+                    // 显示成功提示
+                    showToast('评论成功！');
+                }
+            });
+        }
+        
+        // 处理点赞
+        function handleLike(postId) {
+            const post = postsData.find(p => p.id === postId);
+            if (!post) return;
+            
+            if (post.liked) {
+                // 取消点赞
+                post.likes -= 1;
+                post.liked = false;
+            } else {
+                // 点赞
+                post.likes += 1;
+                post.liked = true;
+            }
+            
+            // 更新UI
+            const postElement = document.querySelector(`.post[data-id="${postId}"]`);
+            const likeAction = postElement.querySelector('[data-action="like"]');
+            const likeCount = postElement.querySelector('.like-count');
+            
+            likeCount.textContent = post.likes;
+            
+            if (post.liked) {
+                likeAction.classList.add('liked');
+            } else {
+                likeAction.classList.remove('liked');
+            }
+        }
+        
+        // 处理评论
+        function handleComment(postId) {
+            currentPostId = postId;
+            
+            const post = postsData.find(p => p.id === postId);
+            if (!post) return;
+            
+            // 渲染评论
+            renderComments(post.commentsData);
+            
+            // 显示评论模态框
+            document.getElementById('comment-modal').style.display = 'flex';
+        }
+        
+        // 渲染评论
+        function renderComments(comments) {
+            const commentList = document.getElementById('comment-list');
+            commentList.innerHTML = '';
+            
+            if (comments.length === 0) {
+                commentList.innerHTML = '<div style="text-align:center;color:#999;padding:20px;">暂无评论</div>';
+                return;
+            }
+            
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment-item';
+                
+                commentElement.innerHTML = `
+                    <div class="comment-user">${comment.user}</div>
+                    <div class="comment-text">${comment.text}</div>
+                    <div class="comment-time">${comment.time}</div>
+                `;
+                
+                commentList.appendChild(commentElement);
+            });
+        }
+        
+        // 更新帖子评论数
+        function updatePostCommentCount(postId, count) {
+            const postElement = document.querySelector(`.post[data-id="${postId}"]`);
+            if (postElement) {
+                const commentCount = postElement.querySelector('.comment-count');
+                commentCount.textContent = count;
+            }
+        }
+        
+        // 显示提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

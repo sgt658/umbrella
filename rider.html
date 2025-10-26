@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伞通通</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            max-width: 375px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            padding: 15px;
+            padding-bottom: 70px;
+        }
+        
+        /* 顶部导航 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #4a90e2;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            max-width: 375px;
+            margin: 0 auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .nav-item.active {
+            color: #4a90e2;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* 订单选项卡 */
+        .order-tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .order-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .order-tab.active {
+            background-color: #4a90e2;
+            color: white;
+        }
+        
+        /* 订单列表 */
+        .order-list {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .order-item {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-info h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .order-info p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .order-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .order-detail {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .order-detail-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .order-detail-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #4a90e2;
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: #52c41a;
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: #faad14;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        /* 状态标签 */
+        .status-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        .status-accepted {
+            background-color: #e6f7ff;
+            color: #1890ff;
+        }
+        
+        .status-picking {
+            background-color: #f0f7ff;
+            color: #4a90e2;
+        }
+        
+        .status-delivering {
+            background-color: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .status-completed {
+            background-color: #f6ffed;
+            color: #52c41a;
+        }
+        
+        /* 页面内容 */
+        .page-content {
+            display: none;
+        }
+        
+        .page-content.active {
+            display: block;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 85%;
+            max-width: 320px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-close {
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-message {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .modal-btn.confirm {
+            background-color: #4a90e2;
+            color: white;
+        }
+        
+        .modal-btn.cancel {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        /* 成功模态框 */
+        .success-modal-content {
+            background-color: white;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 300px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .success-modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #52c41a;
+        }
+        
+        .success-modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .success-modal-message {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .success-modal-btn {
+            padding: 10px 20px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        /* 地图容器 - 修改为使用本地图片 */
+        .map-container {
+            height: 200px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .map-overlay {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        /* 骑手信息 */
+        .rider-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .rider-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .rider-details {
+            flex: 1;
+        }
+        
+        .rider-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .rider-rating {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(74, 144, 226, 0.3);
+            border-radius: 50%;
+            border-top-color: #4a90e2;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <h1>伞通通</h1>
+        <div class="header-icons">
+            <span>🔔</span>
+            <span>👤</span>
+        </div>
+    </div>
+    
+    <!-- 送伞者内容 -->
+    <div class="container">
+        <!-- 骑手信息 -->
+        <div class="rider-info">
+            <div class="rider-avatar">骑</div>
+            <div class="rider-details">
+                <div class="rider-name">闪电侠</div>
+                <div class="rider-rating">⭐ 4.9 | 已完成 128 单</div>
+            </div>
+            <div class="status-tag status-delivering">在线接单</div>
+        </div>
+        
+        <!-- 订单选项卡 -->
+        <div class="order-tabs">
+            <div class="order-tab active" onclick="showOrderTab('available')">待抢订单</div>
+            <div class="order-tab" onclick="showOrderTab('accepted')">已接订单</div>
+            <div class="order-tab" onclick="showOrderTab('history')">历史订单</div>
+        </div>
+        
+        <!-- 待抢订单 -->
+        <div id="available-orders" class="page-content active">
+            <div class="order-list">
+                <div class="order-item">
+                    <h3>送伞到食堂</h3>
+                    <p>用户: 小明 | 距离: 1.2km</p>
+                    
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <div class="order-detail-label">送达时间</div>
+                            <div class="order-detail-value">14:30前</div>
+                        </div>
+                        <div class="order-detail">
+                            <div class="order-detail-label">费用</div>
+                            <div class="order-detail-value">¥15.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="map-container">
+                        <img src="images/map.jpg" alt="送伞路线" class="map-image">
+                        <div class="map-overlay">送伞路线: 宿舍 → 食堂</div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn btn-secondary">查看详情</button>
+                        <button class="btn btn-primary" onclick="acceptOrder(1)">抢单</button>
+                    </div>
+                </div>
+                
+                <div class="order-item">
+                    <h3>送伞到图书馆</h3>
+                    <p>用户: 李华 | 距离: 0.8km</p>
+                    
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <div class="order-detail-label">送达时间</div>
+                            <div class="order-detail-value">15:00前</div>
+                        </div>
+                        <div class="order-detail">
+                            <div class="order-detail-label">费用</div>
+                            <div class="order-detail-value">¥12.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="map-container">
+                        <img src="images/map.jpg" alt="送伞路线" class="map-image">
+                        <div class="map-overlay">送伞路线: 教学楼 → 图书馆</div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn btn-secondary">查看详情</button>
+                        <button class="btn btn-primary" onclick="acceptOrder(2)">抢单</button>
+                    </div>
+                </div>
+                
+                <div class="order-item">
+                    <h3>送伞到第七教学楼</h3>
+                    <p>用户: 张伟 | 距离: 2.1km</p>
+                    
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <div class="order-detail-label">送达时间</div>
+                            <div class="order-detail-value">16:30前</div>
+                        </div>
+                        <div class="order-detail">
+                            <div class="order-detail-label">费用</div>
+                            <div class="order-detail-value">¥18.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="map-container">
+                        <img src="images/map.jpg" alt="送伞路线" class="map-image">
+                        <div class="map-overlay">送伞路线: 东门 → 第七教学楼</div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn btn-secondary">查看详情</button>
+                        <button class="btn btn-primary" onclick="acceptOrder(3)">抢单</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 已接订单 -->
+        <div id="accepted-orders" class="page-content">
+            <div class="order-list">
+                <div class="order-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3>送伞到学生活动中心</h3>
+                        <div class="status-tag status-picking">取伞中</div>
+                    </div>
+                    <p>用户: 王芳 | 距离: 0.5km</p>
+                    
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <div class="order-detail-label">送达时间</div>
+                            <div class="order-detail-value">14:00前</div>
+                        </div>
+                        <div class="order-detail">
+                            <div class="order-detail-label">费用</div>
+                            <div class="order-detail-value">¥10.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="map-container">
+                        <img src="images/map.jpg" alt="送伞路线" class="map-image">
+                        <div class="map-overlay">送伞路线: 宿舍 → 学生活动中心</div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn btn-warning" onclick="startDelivery(4)">开始配送</button>
+                    </div>
+                </div>
+                
+                <div class="order-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3>送伞到体育馆</h3>
+                        <div class="status-tag status-delivering">配送中</div>
+                    </div>
+                    <p>用户: 刘洋 | 距离: 1.8km</p>
+                    
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <div class="order-detail-label">送达时间</div>
+                            <div class="order-detail-value">15:30前</div>
+                        </div>
+                        <div class="order-detail">
+                            <div class="order-detail-label">费用</div>
+                            <div class="order-detail-value">¥16.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="map-container">
+                        <img src="images/map.jpg" alt="送伞路线" class="map-image">
+                        <div class="map-overlay">送伞路线: 图书馆 → 体育馆</div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn btn-success" onclick="completeDelivery(5)">完成配送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 历史订单 -->
+        <div id="history-orders" class="page-content">
+            <div class="order-list">
+                <div class="order-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3>送伞到宿舍楼</h3>
+                        <div class="status-tag status-completed">已完成</div>
+                    </div>
+                    <p>用户: 小明 | 距离: 1.2km</p>
+                    
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <div class="order-detail-label">完成时间</div>
+                            <div class="order-detail-value">2025-10-15 13:45</div>
+                        </div>
+                        <div class="order-detail">
+                            <div class="order-detail-label">费用</div>
+                            <div class="order-detail-value">¥15.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="map-container">
+                        <img src="images/map.jpg" alt="送伞路线" class="map-image">
+                        <div class="map-overlay">送伞路线: 食堂 → 宿舍</div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn btn-secondary">查看详情</button>
+                        <button class="btn btn-primary">再次接单</button>
+                    </div>
+                </div>
+                
+                <div class="order-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3>送伞到行政楼</h3>
+                        <div class="status-tag status-completed">已完成</div>
+                    </div>
+                    <p>用户: 李华 | 距离: 0.8km</p>
+                    
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <div class="order-detail-label">完成时间</div>
+                            <div class="order-detail-value">2025-10-14 10:20</div>
+                        </div>
+                        <div class="order-detail">
+                            <div class="order-detail-label">费用</div>
+                            <div class="order-detail-value">¥12.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="map-container">
+                        <img src="images/map.jpg" alt="送伞路线" class="map-image">
+                        <div class="map-overlay">送伞路线: 图书馆 → 行政楼</div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn btn-secondary">查看详情</button>
+                        <button class="btn btn-primary">再次接单</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 抢单确认模态框 -->
+    <div id="accept-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div></div>
+                <div class="modal-title">确认抢单</div>
+                <div class="modal-close" onclick="closeModal('accept-modal')">×</div>
+            </div>
+            
+            <div class="modal-message">
+                您确定要接这个送伞订单吗？接单后需要在规定时间内完成配送。
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('accept-modal')">取消</button>
+                <button class="modal-btn confirm" id="confirm-accept">确认接单</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 开始配送模态框 -->
+    <div id="start-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div></div>
+                <div class="modal-title">开始配送</div>
+                <div class="modal-close" onclick="closeModal('start-modal')">×</div>
+            </div>
+            
+            <div class="modal-message">
+                您确定要开始配送这个订单吗？开始后系统将通知用户。
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('start-modal')">取消</button>
+                <button class="modal-btn confirm" id="confirm-start">开始配送</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 完成配送模态框 -->
+    <div id="complete-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div></div>
+                <div class="modal-title">完成配送</div>
+                <div class="modal-close" onclick="closeModal('complete-modal')">×</div>
+            </div>
+            
+            <div class="modal-message">
+                您确定已完成这个订单的配送吗？确认后用户将收到完成通知。
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('complete-modal')">取消</button>
+                <button class="modal-btn confirm" id="confirm-complete">完成配送</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 抢单成功模态框 -->
+    <div id="accept-success-modal" class="modal">
+        <div class="success-modal-content">
+            <div class="success-modal-icon">✅</div>
+            <div class="success-modal-title">抢单成功</div>
+            <div class="success-modal-message">您已成功接单，请尽快前往取伞点</div>
+            <button class="success-modal-btn" onclick="closeModal('accept-success-modal')">确定</button>
+        </div>
+    </div>
+    
+    <!-- 开始配送成功模态框 -->
+    <div id="start-success-modal" class="modal">
+        <div class="success-modal-content">
+            <div class="success-modal-icon">🚴</div>
+            <div class="success-modal-title">开始配送</div>
+            <div class="success-modal-message">您已开始配送，系统已通知用户</div>
+            <button class="success-modal-btn" onclick="closeModal('start-success-modal')">确定</button>
+        </div>
+    </div>
+    
+    <!-- 完成配送成功模态框 -->
+    <div id="complete-success-modal" class="modal">
+        <div class="success-modal-content">
+            <div class="success-modal-icon">🎉</div>
+            <div class="success-modal-title">配送完成</div>
+            <div class="success-modal-message">订单已完成，感谢您的服务！</div>
+            <button class="success-modal-btn" onclick="closeModal('complete-success-modal')">确定</button>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <a href="page.html" class="nav-item">
+            <div class="nav-icon">🏠</div>
+            <div>主页</div>
+        </a>
+        <a href="rider.html" class="nav-item active">
+            <div class="nav-icon">🚴</div>
+            <div>送伞者</div>
+        </a>
+        <a href="community.html" class="nav-item">
+            <div class="nav-icon">👥</div>
+            <div>社区</div>
+        </a>
+        <a href="message.html" class="nav-item">
+            <div class="nav-icon">💬</div>
+            <div>消息</div>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div>我的</div>
+        </a>
+    </div>
+    
+    <script>
+        // 当前选中的订单ID
+        let currentOrderId = null;
+        
+        // 订单选项卡切换
+        function showOrderTab(tab) {
+            // 隐藏所有内容
+            document.querySelectorAll('.page-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 显示选中的内容
+            document.getElementById(tab + '-orders').classList.add('active');
+            
+            // 更新选项卡状态
+            document.querySelectorAll('.order-tab').forEach(tabEl => {
+                tabEl.classList.remove('active');
+            });
+            
+            if (tab === 'available') {
+                document.querySelector('.order-tab:nth-child(1)').classList.add('active');
+            } else if (tab === 'accepted') {
+                document.querySelector('.order-tab:nth-child(2)').classList.add('active');
+            } else {
+                document.querySelector('.order-tab:nth-child(3)').classList.add('active');
+            }
+        }
+        
+        // 抢单功能
+        function acceptOrder(orderId) {
+            currentOrderId = orderId;
+            document.getElementById('accept-modal').style.display = 'flex';
+            
+            // 设置确认按钮事件
+            document.getElementById('confirm-accept').onclick = function() {
+                // 模拟抢单过程
+                document.getElementById('accept-modal').style.display = 'none';
+                
+                // 显示抢单成功模态框
+                document.getElementById('accept-success-modal').style.display = 'flex';
+                
+                // 在实际应用中，这里会发送请求到服务器更新订单状态
+                console.log('抢单成功，订单ID:', orderId);
+            };
+        }
+        
+        // 开始配送功能
+        function startDelivery(orderId) {
+            currentOrderId = orderId;
+            document.getElementById('start-modal').style.display = 'flex';
+            
+            // 设置确认按钮事件
+            document.getElementById('confirm-start').onclick = function() {
+                // 模拟开始配送过程
+                document.getElementById('start-modal').style.display = 'none';
+                
+                // 显示开始配送成功模态框
+                document.getElementById('start-success-modal').style.display = 'flex';
+                
+                // 在实际应用中，这里会发送请求到服务器更新订单状态
+                console.log('开始配送，订单ID:', orderId);
+            };
+        }
+        
+        // 完成配送功能
+        function completeDelivery(orderId) {
+            currentOrderId = orderId;
+            document.getElementById('complete-modal').style.display = 'flex';
+            
+            // 设置确认按钮事件
+            document.getElementById('confirm-complete').onclick = function() {
+                // 模拟完成配送过程
+                document.getElementById('complete-modal').style.display = 'none';
+                
+                // 显示完成配送成功模态框
+                document.getElementById('complete-success-modal').style.display = 'flex';
+                
+                // 在实际应用中，这里会发送请求到服务器更新订单状态
+                console.log('完成配送，订单ID:', orderId);
+            };
+        }
+        
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            
+            // 如果是成功模态框，自动刷新页面显示
+            if (modalId.includes('success')) {
+                setTimeout(() => {
+                    if (modalId === 'accept-success-modal') {
+                        showOrderTab('accepted');
+                    } else if (modalId === 'complete-success-modal') {
+                        showOrderTab('history');
+                    }
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>

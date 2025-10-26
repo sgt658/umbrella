@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伞通通 - 登录注册</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        :root {
+            --primary: #4a90e2;
+            --primary-dark: #3a7bc8;
+            --primary-light: #e6f2ff;
+            --secondary: #52c41a;
+            --danger: #ff4d4f;
+            --warning: #faad14;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 375px; /* 限制最大宽度与其他页面一致 */
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .content-wrapper {
+            padding: 20px;
+            padding-bottom: 40px;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        /* 品牌区域 */
+        .brand-section {
+            text-align: center;
+            margin: 30px 0 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        .brand-logo {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--gray-light);
+        }
+        
+        .brand-logo i {
+            font-size: 32px;
+            color: var(--primary);
+        }
+        
+        .brand-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .brand-slogan {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 400;
+        }
+        
+        /* 表单容器 */
+        .form-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+        
+        /* 选项卡 */
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: var(--gray-light);
+            border-radius: 30px;
+            padding: 4px;
+            position: relative;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+            border-radius: 30px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .tab.active {
+            color: white;
+        }
+        
+        .tab-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            height: calc(100% - 8px);
+            width: calc(50% - 8px);
+            background: var(--primary);
+            border-radius: 30px;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            background-color: var(--light);
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+            background-color: white;
+        }
+        
+        .form-input.error {
+            border-color: var(--danger);
+        }
+        
+        .form-hint {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+        
+        .form-error {
+            font-size: 11px;
+            color: var(--danger);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-error i {
+            margin-right: 5px;
+            font-size: 10px;
+        }
+        
+        /* 验证码输入 */
+        .code-input-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .code-input {
+            flex: 1;
+        }
+        
+        .code-btn {
+            padding: 12px 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+            min-width: 100px;
+        }
+        
+        .code-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .code-btn:disabled {
+            background-color: var(--gray-light);
+            color: var(--gray);
+            cursor: not-allowed;
+        }
+        
+        /* 按钮 */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(74, 144, 226, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background-color: var(--gray-light);
+            color: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+        }
+        
+        /* 身份选择 */
+        .role-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .role-option {
+            flex: 1;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: white;
+        }
+        
+        .role-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .role-option.selected {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(74, 144, 226, 0.2);
+        }
+        
+        .role-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .role-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .role-desc {
+            font-size: 11px;
+            color: var(--gray);
+        }
+        
+        /* 表单步骤 */
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* 步骤指示器 */
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .step {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0 12px;
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+        }
+        
+        .step.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+        }
+        
+        .step.completed {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .step-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--gray-light);
+            z-index: 0;
+        }
+        
+        .step-line-progress {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 2px;
+            background-color: var(--primary);
+            z-index: 0;
+            transition: var(--transition);
+        }
+        
+        /* 地区选择 */
+        .region-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .region-select {
+            flex: 1;
+        }
+        
+        /* 文件上传 */
+        .file-upload {
+            border: 2px dashed var(--gray-light);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: var(--light);
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+        
+        .file-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--gray);
+        }
+        
+        .file-text {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        /* 底部链接 */
+        .footer-links {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+        
+        .footer-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        /* 成功提示 */
+        .success-message {
+            text-align: center;
+            padding: 25px 0;
+        }
+        
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 32px;
+            animation: bounceIn 0.8s ease;
+        }
+        
+        .success-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .success-text {
+            color: var(--gray);
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 8px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(74, 144, 226, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-wrapper">
+            <!-- 品牌区域 -->
+            <div class="brand-section">
+                <div class="brand-logo">
+                    <i class="fas fa-umbrella"></i>
+                </div>
+                <div class="brand-name">伞通通</div>
+                <div class="brand-slogan">雨天出行，伞到无忧</div>
+            </div>
+            
+            <!-- 登录/注册表单 -->
+            <div class="form-container">
+                <!-- 选项卡 -->
+                <div class="tab-container">
+                    <div class="tab-slider" id="tab-slider"></div>
+                    <div class="tab active" id="login-tab">登录</div>
+                    <div class="tab" id="register-tab">注册</div>
+                </div>
+                
+                <!-- 登录表单 -->
+                <div id="login-form" class="form-step active">
+                    <div class="form-group">
+                        <label class="form-label">手机号</label>
+                        <input type="tel" class="form-input" id="login-phone" placeholder="请输入手机号">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-input" id="login-password" placeholder="请输入密码">
+                        <div class="form-error" id="login-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">身份选择</label>
+                        <div class="role-container">
+                            <div class="role-option selected" data-role="user">
+                                <div class="role-icon"><i class="fas fa-user"></i></div>
+                                <div class="role-name">普通用户</div>
+                                <div class="role-desc">使用伞服务</div>
+                            </div>
+                            <div class="role-option" data-role="rider">
+                                <div class="role-icon"><i class="fas fa-bicycle"></i></div>
+                                <div class="role-name">送伞者</div>
+                                <div class="role-desc">提供伞服务</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" id="login-btn">登录</button>
+                    
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">忘记密码？</a>
+                    </div>
+                </div>
+                
+                <!-- 注册流程 -->
+                <div id="register-form" class="form-step">
+                    <!-- 步骤指示器 -->
+                    <div class="step-indicator">
+                        <div class="step-line"></div>
+                        <div class="step-line-progress" id="step-progress" style="width: 33.33%"></div>
+                        <div class="step active" data-step="1">1</div>
+                        <div class="step" data-step="2">2</div>
+                        <div class="step" data-step="3">3</div>
+                    </div>
+                    
+                    <!-- 步骤1: 手机验证 -->
+                    <div id="register-step-1" class="form-step active">
+                        <div class="form-group">
+                            <label class="form-label">手机号</label>
+                            <input type="tel" class="form-input" id="register-phone" placeholder="请输入手机号">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">验证码</label>
+                            <div class="code-input-group">
+                                <input type="text" class="form-input code-input" id="register-code" placeholder="请输入验证码">
+                                <button class="code-btn" id="get-code-btn">获取验证码</button>
+                            </div>
+                            <div class="form-error" id="code-error"></div>
+                        </div>
+                        
+                        <button class="btn" id="next-step-1">下一步</button>
+                    </div>
+                    
+                    <!-- 步骤2: 设置密码 -->
+                    <div id="register-step-2" class="form-step">
+                        <div class="form-group">
+                            <label class="form-label">设置密码</label>
+                            <input type="password" class="form-input" id="register-password" placeholder="请输入密码">
+                            <div class="form-hint">密码需包含字母和数字，长度6-20位</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">确认密码</label>
+                            <input type="password" class="form-input" id="register-confirm-password" placeholder="请再次输入密码">
+                            <div class="form-error" id="password-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button class="btn" id="next-step-2">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤3: 身份选择和信息填写 -->
+                    <div id="register-step-3" class="form-step">
+                        <div class="form-group">
+                            <label class="form-label">身份选择</label>
+                            <div class="role-container">
+                                <div class="role-option selected" data-role="user">
+                                    <div class="role-icon"><i class="fas fa-user"></i></div>
+                                    <div class="role-name">普通用户</div>
+                                    <div class="role-desc">使用伞服务</div>
+                                </div>
+                                <div class="role-option" data-role="rider">
+                                    <div class="role-icon"><i class="fas fa-bicycle"></i></div>
+                                    <div class="role-name">送伞者</div>
+                                    <div class="role-desc">提供伞服务</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 普通用户信息 -->
+                        <div id="user-info" class="form-group">
+                            <div class="form-group">
+                                <label class="form-label">昵称</label>
+                                <input type="text" class="form-input" id="user-nickname" placeholder="请输入昵称">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">地区</label>
+                                <div class="region-group">
+                                    <select class="form-input region-select" id="user-province">
+                                        <option value="">选择省份</option>
+                                        <option value="北京">北京市</option>
+                                        <option value="上海">上海市</option>
+                                        <option value="广东">广东省</option>
+                                        <option value="浙江">浙江省</option>
+                                        <option value="江苏">江苏省</option>
+                                    </select>
+                                    <select class="form-input region-select" id="user-city">
+                                        <option value="">选择城市</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 送伞者信息 -->
+                        <div id="rider-info" class="form-group" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label">真实姓名</label>
+                                <input type="text" class="form-input" id="rider-name" placeholder="请输入真实姓名">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">身份证号</label>
+                                <input type="text" class="form-input" id="rider-id" placeholder="请输入身份证号">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">身份证照片</label>
+                                <div class="file-upload" id="id-card-upload">
+                                    <div class="file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                    <div class="file-text">点击上传身份证照片</div>
+                                    <input type="file" class="file-input" id="id-card-file" accept="image/*">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">收款方式</label>
+                                <select class="form-input" id="payment-method">
+                                    <option value="">请选择收款方式</option>
+                                    <option value="alipay">支付宝</option>
+                                    <option value="wechat">微信支付</option>
+                                    <option value="bank">银行卡</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">收款账号</label>
+                                <input type="text" class="form-input" id="payment-account" placeholder="请输入收款账号">
+                            </div>
+                        </div>
+                        
+                        <button class="btn" id="register-btn">完成注册</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 注册成功提示 -->
+            <div id="success-message" class="form-container" style="display: none;">
+                <div class="success-message">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="success-title">注册成功！</div>
+                    <div class="success-text" id="success-role-text">您已成功注册为普通用户</div>
+                    <button class="btn" id="go-to-app">进入应用</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 页面元素
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const tabSlider = document.getElementById('tab-slider');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const successMessage = document.getElementById('success-message');
+        
+        const loginPhone = document.getElementById('login-phone');
+        const loginPassword = document.getElementById('login-password');
+        const loginError = document.getElementById('login-error');
+        const loginBtn = document.getElementById('login-btn');
+        
+        const registerPhone = document.getElementById('register-phone');
+        const registerCode = document.getElementById('register-code');
+        const codeError = document.getElementById('code-error');
+        const getCodeBtn = document.getElementById('get-code-btn');
+        const nextStep1Btn = document.getElementById('next-step-1');
+        
+        const registerPassword = document.getElementById('register-password');
+        const registerConfirmPassword = document.getElementById('register-confirm-password');
+        const passwordError = document.getElementById('password-error');
+        const nextStep2Btn = document.getElementById('next-step-2');
+        
+        const roleOptions = document.querySelectorAll('.role-option');
+        const userInfo = document.getElementById('user-info');
+        const riderInfo = document.getElementById('rider-info');
+        const registerBtn = document.getElementById('register-btn');
+        
+        const userNickname = document.getElementById('user-nickname');
+        const userProvince = document.getElementById('user-province');
+        const userCity = document.getElementById('user-city');
+        
+        const riderName = document.getElementById('rider-name');
+        const riderId = document.getElementById('rider-id');
+        const idCardUpload = document.getElementById('id-card-upload');
+        const idCardFile = document.getElementById('id-card-file');
+        const paymentMethod = document.getElementById('payment-method');
+        const paymentAccount = document.getElementById('payment-account');
+        
+        const successRoleText = document.getElementById('success-role-text');
+        const goToAppBtn = document.getElementById('go-to-app');
+        const stepProgress = document.getElementById('step-progress');
+        
+        // 当前状态
+        let currentTab = 'login';
+        let currentStep = 1;
+        let selectedRole = 'user';
+        let countdown = 0;
+        let countdownInterval;
+        
+        // 城市数据
+        const cityData = {
+            '北京': ['北京市'],
+            '上海': ['上海市'],
+            '广东': ['广州市', '深圳市', '东莞市', '佛山市'],
+            '浙江': ['杭州市', '宁波市', '温州市', '绍兴市'],
+            '江苏': ['南京市', '苏州市', '无锡市', '常州市']
+        };
+        
+        // 初始化事件监听器
+        function initEventListeners() {
+            // 选项卡切换
+            loginTab.addEventListener('click', () => switchTab('login'));
+            registerTab.addEventListener('click', () => switchTab('register'));
+            
+            // 登录表单
+            loginBtn.addEventListener('click', handleLogin);
+            
+            // 注册步骤1
+            getCodeBtn.addEventListener('click', getVerificationCode);
+            nextStep1Btn.addEventListener('click', goToStep2);
+            
+            // 注册步骤2
+            nextStep2Btn.addEventListener('click', goToStep3);
+            
+            // 注册步骤3
+            roleOptions.forEach(option => {
+                option.addEventListener('click', () => selectRole(option.dataset.role));
+            });
+            registerBtn.addEventListener('click', handleRegister);
+            
+            // 省份选择变化
+            userProvince.addEventListener('change', updateCityOptions);
+            
+            // 身份证上传
+            idCardUpload.addEventListener('click', () => idCardFile.click());
+            idCardFile.addEventListener('change', handleIdCardUpload);
+            
+            // 成功页面
+            goToAppBtn.addEventListener('click', goToApp);
+        }
+        
+        // 切换选项卡
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // 更新选项卡样式
+            loginTab.classList.toggle('active', tab === 'login');
+            registerTab.classList.toggle('active', tab === 'register');
+            
+            // 移动滑块
+            if (tab === 'login') {
+                tabSlider.style.transform = 'translateX(0)';
+            } else {
+                tabSlider.style.transform = 'translateX(100%)';
+            }
+            
+            // 显示对应的表单
+            loginForm.style.display = tab === 'login' ? 'block' : 'none';
+            registerForm.style.display = tab === 'register' ? 'block' : 'none';
+            successMessage.style.display = 'none';
+            
+            // 重置注册表单状态
+            if (tab === 'register') {
+                resetRegisterForm();
+            }
+        }
+        
+        // 重置注册表单
+        function resetRegisterForm() {
+            currentStep = 1;
+            selectedRole = 'user';
+            
+            // 重置步骤指示器
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active', 'completed');
+                if (step.dataset.step === '1') {
+                    step.classList.add('active');
+                }
+            });
+            
+            // 重置步骤显示
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('register-step-1').classList.add('active');
+            
+            // 重置角色选择
+            roleOptions.forEach(option => {
+                option.classList.toggle('selected', option.dataset.role === 'user');
+            });
+            
+            // 重置信息表单显示
+            userInfo.style.display = 'block';
+            riderInfo.style.display = 'none';
+            
+            // 更新进度条
+            updateStepProgress(1);
+            
+            // 清空表单错误
+            codeError.textContent = '';
+            passwordError.textContent = '';
+            loginError.textContent = '';
+        }
+        
+        // 获取验证码
+        function getVerificationCode() {
+            const phone = registerPhone.value.trim();
+            
+            if (!phone) {
+                codeError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请输入手机号';
+                return;
+            }
+            
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                codeError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请输入正确的手机号';
+                return;
+            }
+            
+            // 模拟发送验证码
+            codeError.textContent = '';
+            startCountdown();
+            
+            // 在实际应用中，这里会调用后端API发送验证码
+            console.log('发送验证码到:', phone);
+        }
+        
+        // 开始倒计时
+        function startCountdown() {
+            countdown = 60;
+            getCodeBtn.disabled = true;
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                getCodeBtn.textContent = `${countdown}秒后重新获取`;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    getCodeBtn.disabled = false;
+                    getCodeBtn.textContent = '获取验证码';
+                }
+            }, 1000);
+        }
+        
+        // 前往步骤2
+        function goToStep2() {
+            const phone = registerPhone.value.trim();
+            const code = registerCode.value.trim();
+            
+            if (!phone) {
+                codeError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请输入手机号';
+                return;
+            }
+            
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                codeError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请输入正确的手机号';
+                return;
+            }
+            
+            if (!code) {
+                codeError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请输入验证码';
+                return;
+            }
+            
+            if (code !== '123456') { // 模拟验证码
+                codeError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 验证码错误';
+                return;
+            }
+            
+            // 更新步骤指示器
+            document.querySelector('.step[data-step="1"]').classList.remove('active');
+            document.querySelector('.step[data-step="1"]').classList.add('completed');
+            document.querySelector('.step[data-step="2"]').classList.add('active');
+            
+            // 显示步骤2
+            document.getElementById('register-step-1').classList.remove('active');
+            document.getElementById('register-step-2').classList.add('active');
+            
+            currentStep = 2;
+            updateStepProgress(2);
+        }
+        
+        // 前往步骤3
+        function goToStep3() {
+            const password = registerPassword.value;
+            const confirmPassword = registerConfirmPassword.value;
+            
+            if (!password) {
+                passwordError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请输入密码';
+                return;
+            }
+            
+            if (password.length < 6 || password.length > 20) {
+                passwordError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 密码长度需在6-20位之间';
+                return;
+            }
+            
+            if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) {
+                passwordError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 密码需包含字母和数字';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                passwordError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 两次输入的密码不一致';
+                return;
+            }
+            
+            // 更新步骤指示器
+            document.querySelector('.step[data-step="2"]').classList.remove('active');
+            document.querySelector('.step[data-step="2"]').classList.add('completed');
+            document.querySelector('.step[data-step="3"]').classList.add('active');
+            
+            // 显示步骤3
+            document.getElementById('register-step-2').classList.remove('active');
+            document.getElementById('register-step-3').classList.add('active');
+            
+            currentStep = 3;
+            updateStepProgress(3);
+        }
+        
+        // 更新步骤进度
+        function updateStepProgress(step) {
+            const progress = (step - 1) * 33.33;
+            stepProgress.style.width = `${progress}%`;
+        }
+        
+        // 选择身份
+        function selectRole(role) {
+            selectedRole = role;
+            
+            // 更新角色选择样式
+            roleOptions.forEach(option => {
+                option.classList.toggle('selected', option.dataset.role === role);
+            });
+            
+            // 显示对应的信息表单
+            userInfo.style.display = role === 'user' ? 'block' : 'none';
+            riderInfo.style.display = role === 'rider' ? 'block' : 'none';
+        }
+        
+        // 处理注册
+        function handleRegister() {
+            let isValid = true;
+            
+            if (selectedRole === 'user') {
+                // 验证普通用户信息
+                if (!userNickname.value.trim()) {
+                    alert('请输入昵称');
+                    isValid = false;
+                }
+                
+                if (!userProvince.value || !userCity.value) {
+                    alert('请选择地区');
+                    isValid = false;
+                }
+            } else {
+                // 验证送伞者信息
+                if (!riderName.value.trim()) {
+                    alert('请输入真实姓名');
+                    isValid = false;
+                }
+                
+                if (!riderId.value.trim()) {
+                    alert('请输入身份证号');
+                    isValid = false;
+                }
+                
+                if (!idCardFile.files.length) {
+                    alert('请上传身份证照片');
+                    isValid = false;
+                }
+                
+                if (!paymentMethod.value) {
+                    alert('请选择收款方式');
+                    isValid = false;
+                }
+                
+                if (!paymentAccount.value.trim()) {
+                    alert('请输入收款账号');
+                    isValid = false;
+                }
+            }
+            
+            if (isValid) {
+                // 模拟注册成功
+                registerForm.style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // 更新成功消息
+                successRoleText.textContent = `您已成功注册为${selectedRole === 'user' ? '普通用户' : '送伞者'}`;
+            }
+        }
+        
+        // 处理登录
+        function handleLogin() {
+            const phone = loginPhone.value.trim();
+            const password = loginPassword.value;
+            const role = document.querySelector('.role-option.selected').dataset.role;
+            
+            if (!phone) {
+                loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请输入手机号';
+                return;
+            }
+            
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请输入正确的手机号';
+                return;
+            }
+            
+            if (!password) {
+                loginError.innerHTML = '<i class="fas fa-exclamation-circle"></i> 请输入密码';
+                return;
+            }
+            
+            // 模拟登录成功
+            loginError.textContent = '';
+            
+            // 在实际应用中，这里会调用后端API验证登录信息
+            console.log('登录信息:', { phone, password, role });
+            
+            // 跳转到对应页面
+            if (role === 'user') {
+                window.location.href = 'page.html';
+            } else {
+                window.location.href = 'rider.html';
+            }
+        }
+        
+        // 更新城市选项
+        function updateCityOptions() {
+            const province = userProvince.value;
+            userCity.innerHTML = '<option value="">选择城市</option>';
+            
+            if (province && cityData[province]) {
+                cityData[province].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    userCity.appendChild(option);
+                });
+            }
+        }
+        
+        // 处理身份证上传
+        function handleIdCardUpload() {
+            if (idCardFile.files.length > 0) {
+                const fileName = idCardFile.files[0].name;
+                idCardUpload.querySelector('.file-text').textContent = `已选择: ${fileName}`;
+            }
+        }
+        
+        // 进入应用
+        function goToApp() {
+            if (selectedRole === 'user') {
+                window.location.href = 'page.html';
+            } else {
+                window.location.href = 'rider.html';
+            }
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initEventListeners();
+        });
+    </script>
+</body>
+</html>
